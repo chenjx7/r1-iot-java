@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service("DouBao")
 public class DouBao extends GrokAiX {
-
+#测试豆包
     public DouBao() {
         this.BASE_URL = "https://ark.cn-beijing.volces.com/api/v3";
         this.MODEL = "doubao-pro-32k-functioncall-241028";
