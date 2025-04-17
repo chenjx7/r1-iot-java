@@ -5,13 +5,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
       - name: Build the Docker image
         run: |
           docker version
           # 登录阿里云镜像仓库
-          docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} crpi-p4epj17i9dug3hn9-vpc.cn-shanghai.personal.cr.aliyuncs.com/test_r1/r1_java
+          docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} crpi-p4epj17i9dug3hn9.cn-shanghai.personal.cr.aliyuncs.com
           cd r1_java
           # 使用Dockerfile构建镜像
-          docker build . --file Dockerfile --tag crpi-p4epj17i9dug3hn9-vpc.cn-shanghai.personal.cr.aliyuncs.com/test_r1/r1_java
+          docker build . --file Dockerfile --tag crpi-p4epj17i9dug3hn9.cn-shanghai.personal.cr.aliyuncs.com/test_r1/r1_java:0.0.1
           # 推送镜像到镜像仓库
-          docker push crpi-p4epj17i9dug3hn9-vpc.cn-shanghai.personal.cr.aliyuncs.com/test_r1/r1_java
+          docker push crpi-p4epj17i9dug3hn9.cn-shanghai.personal.cr.aliyuncs.com/test_r1/r1_java:0.0.1
