@@ -17,8 +17,8 @@ jobs:
         run: |
           docker version
           # 登录阿里云镜像仓库
-          docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} registry.cn-hangzhou.aliyuncs.com
-          cd xxl-job-admin
+          docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} crpi-p4epj17i9dug3hn9-vpc.cn-shanghai.personal.cr.aliyuncs.com
+          cd r1_java
           # 使用Dockerfile构建镜像
           docker build . --file Dockerfile --tag crpi-p4epj17i9dug3hn9-vpc.cn-shanghai.personal.cr.aliyuncs.com/test_r1/r1_java:0.0.1
           # 推送镜像到镜像仓库
