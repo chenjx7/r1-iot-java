@@ -11,13 +11,6 @@ jobs:
         with:
           java-version: 17.0.14
       - name: Build the Docker image
-        with:
-          context: .
-          platforms:
-            with:
-          context: .
-          platforms: |
-            linux/arm64
         run:
           docker version
           # 登录阿里云镜像仓库
