@@ -11,7 +11,7 @@ jobs:
         with:
           java-version: 17.0.14
       - name: Build with Maven
-        run: mvn clean package -DskipTests
+        run: mvn clean install
 
       - name: Build the Docker image
         run: |
