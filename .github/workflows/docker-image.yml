@@ -3,6 +3,7 @@ name: Docker Image CI to ACR
 on:
   push:
     branches: [ "main" ]  # 或者你希望触发构建的分支
+    tags: [ 'v*' ]
   pull_request:
     branches: [ "main" ]
  
