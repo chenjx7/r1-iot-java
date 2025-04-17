@@ -10,8 +10,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17.0.14
+
+      - name: Set platforms
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          platforms: |
+            linux/arm64
+          
       - name: Build the Docker image
-        run:
+        run: |
           docker version
           # 登录阿里云镜像仓库
           docker login --username=${{ secrets.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }} crpi-p4epj17i9dug3hn9.cn-shanghai.personal.cr.aliyuncs.com
