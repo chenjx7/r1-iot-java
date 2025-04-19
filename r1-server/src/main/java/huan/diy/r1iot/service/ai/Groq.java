@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 public class Groq extends GrokAiX {
 
     public Groq() {
-        this.BASE_URL = "https://api.groq.com/openai";
+        this.BASE_URL = "https://bitter-chicken-18.deno.dev/api.groq.com/openai";
         this.MODEL = "deepseek-r1-distill-llama-70b";
     }
 
