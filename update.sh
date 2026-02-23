@@ -1,7 +1,6 @@
 #!/bin/sh
 # curl -sSL https://raw.githubusercontent.com/ring1012/r1-iot-java/refs/heads/master/update.sh | sh
 
-
 # 停止并删除现有容器
 docker stop r1 >/dev/null 2>&1
 docker rm r1 >/dev/null 2>&1
@@ -16,11 +15,17 @@ echo -n "请输入密码（默认123456）: "
 read user_pw < /dev/tty
 password="${user_pw:-123456}"
 
+# 获取用户输入 - 镜像tag
+echo -n "请输入镜像tag（默认latest）: "
+read image_tag < /dev/tty
+image_tag="${image_tag:-latest}"
+
 # 显示用户选择
 echo ""
 echo "=== 配置确认 ==="
 echo "存储路径: $data_path"
 echo "密码    : $password"
+echo "镜像tag : $image_tag"
 echo "================="
 echo ""
 
@@ -34,7 +39,7 @@ docker run \
   --network=host \
   -e password="$password" \
   -v "$data_path:/root/.r1-iot" \
-  registry.cn-hangzhou.aliyuncs.com/ring1012/r1
+  "registry.cn-hangzhou.aliyuncs.com/ring1012/r1:$image_tag"
 
 # 检查容器状态
 if docker ps --filter "name=r1" | grep -q "r1"; then
