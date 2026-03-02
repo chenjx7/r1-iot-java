@@ -62,7 +62,8 @@ def _load_youtube_url1(vId: str):
         'quiet': True,
         'no_warnings': True,
         'extract_flat': False,
-        'js_runtimes': {'deno': {'executable': '/home/container/deno'}}
+        'js_runtimes': {'deno': {'executable': '/home/container/deno'}},
+        'extractor_args': {'remote-components': 'ejs:github'}
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -85,21 +86,22 @@ def _load_youtube_url1(vId: str):
         else:
             raise ValueError("URL not found in response")
 
-        
+
 def _load_youtube_url(vId: str):
     # 直接构造命令行输出，而不是调用 yt_dlp API
     cmd = (
-        f"/home/container/yt-dlp "
+        f"/home/container/.local/bin/yt-dlp "
         f"--cookies /home/container/youtube.txt "
         f"-f 140 "
         f"--quiet --no-warnings "
-        f"--get-url {vId} "
-        f"--js-runtimes deno:/home/container/deno"
+        f"--get-url https://www.youtube.com/watch?v={vId} "
+        f"--js-runtimes deno:/home/container/deno "
+        f"--remote-components ejs:github"
     )
 
     # 执行命令并获取真实结果 URL（静默，无警告）
     process = subprocess.run(shlex.split(cmd), capture_output=True, text=True)
-
+    print(f"err: {process.stderr}")
     url = process.stdout.strip()
     print(f"缓存: {vId}")
 

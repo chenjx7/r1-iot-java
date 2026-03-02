@@ -15,17 +15,24 @@ echo -n "请输入密码（默认123456）: "
 read user_pw < /dev/tty
 password="${user_pw:-123456}"
 
+# 获取用户输入 - Spring Boot 端口号
+echo -n "请输入web服务 端口号（默认80）: "
+read user_port < /dev/tty
+springboot_port="${user_port:-80}"
+
 # 获取用户输入 - 镜像tag
 echo -n "请输入镜像tag（默认latest）: "
 read image_tag < /dev/tty
 image_tag="${image_tag:-latest}"
 
+
 # 显示用户选择
 echo ""
 echo "=== 配置确认 ==="
-echo "存储路径: $data_path"
-echo "密码    : $password"
-echo "镜像tag : $image_tag"
+echo "存储路径   : $data_path"
+echo "密码       : $password"
+echo "镜像tag    : $image_tag"
+echo "Spring Boot端口 : $springboot_port"
 echo "================="
 echo ""
 
@@ -38,6 +45,7 @@ docker run \
   -it -d \
   --network=host \
   -e password="$password" \
+  -e SPRING_BOOT_PORT="$springboot_port" \
   -v "$data_path:/root/.r1-iot" \
   "registry.cn-hangzhou.aliyuncs.com/ring1012/r1:$image_tag"
 

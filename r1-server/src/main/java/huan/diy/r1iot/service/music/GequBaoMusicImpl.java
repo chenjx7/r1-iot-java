@@ -46,7 +46,7 @@ public class GequBaoMusicImpl implements IMusicService {
             .build();
 
 
-    private static final String regex = "\"play_id\"\\s*:\\s*\"([^\"]+)\"";
+    private static final String regex = "play_id\\\\u0022:\\\\u0022([A-Za-z0-9+/=]+)\\\\u0022";
     private static final Pattern pattern = Pattern.compile(regex);
 
     @Override
@@ -71,7 +71,7 @@ public class GequBaoMusicImpl implements IMusicService {
         Document doc = Jsoup.parse(html);
 
         ArrayNode musicInfo = objectMapper.createArrayNode();
-        Elements songs = doc.select(".card .card-text .row .col-8.col-content a");
+        Elements songs = doc.select(".card .card-text .row .col-9 a");
         for (Element song : songs) {
 
             String href = song.attr("href");
@@ -79,8 +79,8 @@ public class GequBaoMusicImpl implements IMusicService {
 
             ObjectNode music = objectMapper.createObjectNode();
             music.put("id", id);
-            music.put("title", song.select(".music-title span").text());
-            music.put("artist", song.select(".text-jade").text());
+            music.put("title", song.select("a div div").get(0).text());
+            music.put("artist", song.select("a div div").get(1).select("small").text());
             music.put("url", globalConfig.getHostIp() + "/music/gequbao/" + id + ".mp3");
             musicInfo.add(music);
         }
