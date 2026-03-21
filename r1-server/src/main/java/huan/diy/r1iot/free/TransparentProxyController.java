@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Sets;
 import huan.diy.r1iot.direct.AIDirect;
 import huan.diy.r1iot.direct.AiAssistant;
 import huan.diy.r1iot.util.R1IotUtils;
@@ -30,12 +31,12 @@ import org.springframework.web.bind.annotation.*;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -50,10 +51,16 @@ public class TransparentProxyController {
 
     private static final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
 
+    private static final Set<String> WHITE_HEADERS;
     // 配置连接池参数
     static {
         connectionManager.setMaxTotal(100);          // 总最大连接数
         connectionManager.setDefaultMaxPerRoute(20); // 每个路由的默认最大连接数
+        WHITE_HEADERS = new HashSet<>(Sets.newHashSet());
+        Arrays.asList(
+        "ci, cryp, i, k, p, dt, remote-addr, ui, http-client-ip, t, u, host, connection, content-type, tp, sp, accept-encoding, user-agent"
+                .split(","))
+                .forEach(s -> WHITE_HEADERS.add(s.trim()));
     }
 
     // 创建 HttpClient 实例
@@ -114,18 +121,17 @@ public class TransparentProxyController {
             }
             while (headerNames.hasMoreElements()) {
                 String headerName = headerNames.nextElement();
-                if (headerName.equalsIgnoreCase("Content-Length") ||
-                        headerName.equalsIgnoreCase("Transfer-Encoding") ||
-                        headerName.equalsIgnoreCase("Content-Encoding")) {
+                if (!WHITE_HEADERS.contains(headerName)) {
                     continue;
                 }
+
 
                 Enumeration<String> values = request.getHeaders(headerName);
                 while (values.hasMoreElements()) {
                     String value = values.nextElement();
 
                     if (headerName.equalsIgnoreCase("host")) {
-                        proxyPost.setHeader("Host", value);
+                        proxyPost.setHeader("Host", "127.0.0.1:18888");
                     } else {
                         proxyPost.addHeader(headerName, value);
                     }
