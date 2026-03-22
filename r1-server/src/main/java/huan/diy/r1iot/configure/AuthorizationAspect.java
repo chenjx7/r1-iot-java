@@ -29,7 +29,7 @@ public class AuthorizationAspect {
     // 在执行方法之前执行此切面，验证Authorization头
     @Before("restControllerMethods()")
     public void checkAuthorization() {
-        String authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader("x-r1-authorization");
 
         if (authorizationHeader == null || !authorizationHeader.equals(R1IotUtils.getAuthToken())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized");

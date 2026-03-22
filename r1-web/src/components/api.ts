@@ -12,7 +12,7 @@ axiosInstance.interceptors.request.use(
 
         // 如果 token 存在，将其添加到 Authorization 请求头中
         if (token) {
-            config.headers['Authorization'] = `${token}`;
+            config.headers['x-r1-authorization'] = `${token}`;
         }
 
         // 返回请求配置

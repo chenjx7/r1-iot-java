@@ -123,5 +123,14 @@ public class R1IotUtils {
         }
     }
 
+    public JsonNode sampleMusic() {
+        String sample = "{\"semantic\":{\"intent\":{\"operations\":[{\"operator\":\"ACT_PLAY\"}]}},\"code\":\"SETTING_EXEC\",\"matchType\":\"FUZZY\",\"originIntent\":{\"nluSlotInfos\":[]},\"confidence\":0.8366984922199375,\"modelIntentClsScore\":{},\"history\":\"cn.yunzhisheng.music\",\"source\":\"nlu\",\"uniCarRet\":{\"result\":{},\"returnCode\":609,\"message\":\"http post reuqest error\"},\"asr_recongize\":\"播放周杰伦的歌。\",\"rc\":0,\"returnCode\":0,\"audioUrl\":\"http://127.0.0.1:18888/trafficRouter/r/h38Llr\",\"retTag\":\"nlu\",\"service\":\"cn.yunzhisheng.music\",\"nluProcessTime\":\"183\",\"text\":\"播放周杰伦的歌\",\"responseId\":\"977504fd5a05409ab2b1a0b9847b49b1\",\"general\":{\"text\":\"好的，已为您播放\",\"type\":\"T\"}}";
+        try {
+            return objectMapper.readTree(sample);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

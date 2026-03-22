@@ -1,6 +1,8 @@
 package huan.diy.r1iot.free;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import huan.diy.r1iot.direct.AIDirect;
+import huan.diy.r1iot.direct.AiAssistant;
 import huan.diy.r1iot.service.YoutubeService;
 import huan.diy.r1iot.service.music.IMusicService;
 import huan.diy.r1iot.util.R1IotUtils;
@@ -69,5 +71,28 @@ public class NoAuthController {
         Map<String, Integer> map = new HashMap<>();
         map.put("status", 0);
         return map;
+    }
+
+
+    @GetMapping("/r1/ai/chat")
+    public JsonNode chat(@RequestParam("text") String text, @RequestHeader("r1-serial") String serial,
+                         HttpServletResponse response) {
+        try {
+            R1IotUtils.setCurrentDeviceId(serial);
+            R1IotUtils.JSON_RET.set(R1IotUtils.sampleMusic());
+            AiAssistant assistant = aidirect.getAssistants().get(serial);
+            String answer = assistant.chat(text);
+            JsonNode ret;
+            if (answer != null) {
+                ret = R1IotUtils.sampleChatResp(answer);
+            } else {
+                ret = R1IotUtils.JSON_RET.get();
+            }
+            response.setHeader("r1-sname", ret.get("service").asText());
+            return ret;
+        } finally {
+            R1IotUtils.JSON_RET.remove();
+        }
+
     }
 }
