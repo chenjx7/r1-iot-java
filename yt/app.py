@@ -262,17 +262,37 @@ YOUTUBE_BASE = "https://www.youtube.com/results"
 @app.route('/youtube/search/audio', methods=['GET'])
 def youtube_search_proxy():
     keyword = request.args.get('keyword', '')
-    suffix = request.args.get('suffix', '')  # 如果你想加后缀
+    suffix = request.args.get('suffix', '')
     search_query = f"{keyword} {suffix}".strip()
 
     # 构造 URL
     url = f"{YOUTUBE_BASE}?search_query={quote_plus(search_query)}"
 
-    # 构造 headers
+    # 构造 headers（完整浏览器模拟）
     headers = {
         "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        # 你可以加更多 header，例如 User-Agent
-        "User-Agent": request.headers.get("User-Agent", "Mozilla/5.0")
+        "device-memory": "8",
+        "sec-ch-dpr": "1.5",
+        "sec-ch-ua": '"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"',
+        "sec-ch-ua-arch": '"x86"',
+        "sec-ch-ua-bitness": '"64"',
+        "sec-ch-ua-form-factors": '"Desktop"',
+        "sec-ch-ua-full-version": '"146.0.7680.153"',
+        "sec-ch-ua-full-version-list": '"Chromium";v="146.0.7680.153", "Not-A.Brand";v="24.0.0.0", "Google Chrome";v="146.0.7680.153"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-model": '""',
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-ch-ua-platform-version": '"19.0.0"',
+        "sec-ch-ua-wow64": "?0",
+        "sec-ch-viewport-width": "919",
+        "upgrade-insecure-requests": "1",
+
+        # 优先使用客户端 UA
+        "user-agent": request.headers.get(
+            "User-Agent",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+        )
     }
 
     # 发起请求
@@ -280,7 +300,10 @@ def youtube_search_proxy():
 
     # 过滤部分 header 避免冲突
     excluded_headers = ['content-encoding', 'transfer-encoding', 'connection']
-    response_headers = [(k, v) for k, v in resp.headers.items() if k.lower() not in excluded_headers]
+    response_headers = [
+        (k, v) for k, v in resp.headers.items()
+        if k.lower() not in excluded_headers
+    ]
 
     # 返回响应
     return Response(resp.content, status=resp.status_code, headers=response_headers)

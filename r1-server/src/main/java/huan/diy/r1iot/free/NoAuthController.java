@@ -7,6 +7,7 @@ import huan.diy.r1iot.service.YoutubeService;
 import huan.diy.r1iot.service.music.IMusicService;
 import huan.diy.r1iot.util.R1IotUtils;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*")
+@Slf4j
 public class NoAuthController {
 
     @Autowired
@@ -78,6 +80,7 @@ public class NoAuthController {
     public JsonNode chat(@RequestParam("text") String text, @RequestHeader("r1-serial") String serial,
                          HttpServletResponse response) {
         try {
+            log.info("r1 asr: {}", text);
             R1IotUtils.setCurrentDeviceId(serial);
             R1IotUtils.JSON_RET.set(R1IotUtils.sampleMusic());
             AiAssistant assistant = aidirect.getAssistants().get(serial);
@@ -89,6 +92,7 @@ public class NoAuthController {
                 ret = R1IotUtils.JSON_RET.get();
             }
             response.setHeader("r1-sname", ret.get("service").asText());
+            log.info("from ai: {}", ret.toString());
             return ret;
         } finally {
             R1IotUtils.JSON_RET.remove();
